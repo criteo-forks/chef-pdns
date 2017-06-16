@@ -13,6 +13,7 @@ end
 
 pdns_recursor_install 'server_02' do
   action :install
+  debug true
   version recursor_version_per_platform
 end
 

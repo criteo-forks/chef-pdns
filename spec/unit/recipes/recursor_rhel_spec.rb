@@ -6,7 +6,7 @@ describe 'pdns_test::recursor_install_multi' do
       ChefSpec::SoloRunner.new(
         platform: 'centos',
         version: '6.8',
-        step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service']) do |node|
+        step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service', 'pdns_recursor_repo', 'pdns_recursor_repo_rhel']) do |node|
         node.automatic['packages']['centos-release']['version'] = '6'
       end
     end
@@ -19,21 +19,26 @@ describe 'pdns_test::recursor_install_multi' do
     #
 
     it 'installs epel-release package' do
-      expect(chef_run).to install_yum_package('epel-release')
+      expect(chef_run).to install_package('epel-release')
     end
 
-    it 'adds yum repository powerdns-rec-40' do
-      expect(chef_run).to create_yum_repository('powerdns-rec-40')
+    it 'adds yum repository powerdns-rec-40-server_01' do
+      mock_service_resource_providers(%i{redhat upstart})
+      expect(chef_run).to create_yum_repository('powerdns-rec-40-server_01')
     end
 
-    it 'adds yum repository powerdns-rec-40-debuginfo' do
-      expect(chef_run).to create_yum_repository('powerdns-rec-40-debuginfo')
+    it 'adds yum repository powerdns-rec-40-server_02-debuginfo' do
+      mock_service_resource_providers(%i{redhat upstart})
+      expect(chef_run).to create_yum_repository('powerdns-rec-40-server_02-debuginfo')
     end
 
     it 'installs pdns recursor package' do
-      expect(chef_run).to install_yum_package('pdns-recursor').with(version: version)
+      expect(chef_run).to install_package('pdns-recursor').with(version: version)
     end
 
+    it 'installs pdns recursor debuginfo package' do
+      expect(chef_run).to install_package('pdns-recursor-debuginfo').with(version: version)
+    end
     #
     # Tests for the service resource
     #
