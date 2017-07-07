@@ -26,7 +26,7 @@ end
 
 property :instance_name, String, name_property: true
 property :cookbook, [String,nil], default: 'pdns'
-property :config_dir, String, default: lazy { default_recursor_config_directory }
+property :config_dir, String, default: lazy { default_recursor_config_directory(node['platform_family']) }
 property :source, [String,nil], default: lazy { "recursor.init.#{node['platform_family']}.erb" }
 property :socket_dir, String, default: lazy { |resource| "/var/run/#{resource.instance_name}" }
 

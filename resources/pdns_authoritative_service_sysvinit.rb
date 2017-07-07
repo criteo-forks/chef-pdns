@@ -27,7 +27,7 @@ end
 property :instance_name, String, name_property: true
 property :cookbook, ['String', 'NilClass']
 property :source, ['String', 'NilClass']
-property :config_dir, String, default: lazy { default_authoritative_config_directory }
+property :config_dir, String, default: lazy { default_authoritative_config_directory(node['platform_family']) }
 property :variables, String
 
 action :enable do

@@ -19,6 +19,35 @@
 module Pdns
   # Common helper for PowerDNS cookbook
   module Helpers
+    REDHAT_URL = Mash.new(
+      auth: {
+        baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40',
+        gpgkey: 'https://repo.powerdns.com/CBC8B383-pub.asc',
+        baseurl_debug: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40/debug',
+      },
+      rec: {
+        baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/rec-40',
+        gpgkey: 'https://repo.powerdns.com/FD380FBB-pub.asc',
+        baseurl_debug: 'http://repo.powerdns.com/centos/$basearch/$releasever/rec-40/debug',
+      },
+    ).freeze unless constants.include? :REDHAT_URL
+
+    def copy_properties_to(to, *properties)
+      properties = self.class.properties.keys if properties.empty?
+      properties.each do |p|
+        # If the property is set on from, and exists on to, set the
+        # property on to
+        if to.class.properties.include?(p) && property_is_set?(p)
+          to.send(p, send(p))
+        end
+      end
+    end
+
+    def repository_name(url = REDHAT_URL['auth']['baseurl'], name = '')
+      "powerdns-#{url.split('/').last}-#{name}"
+    end
+
+    module_function
     def default_user_attributes
       case node['platform_family']
       when 'debian'
@@ -41,8 +70,9 @@ module Pdns
       "pdns_recursor-#{name}"
     end
 
-    def default_recursor_run_user
-      case node['platform_family']
+    module_function
+    def default_recursor_run_user(platform_family = 'rhel')
+      case platform_family
       when 'debian'
         'pdns'
       when 'rhel'
@@ -50,8 +80,8 @@ module Pdns
       end
     end
 
-    def default_recursor_config_directory
-      case node['platform_family']
+    def default_recursor_config_directory(platform_family = 'rhel')
+      case platform_family
       when 'debian'
         '/etc/powerdns'
       when 'rhel'
@@ -63,18 +93,6 @@ module Pdns
   # Helpers method for authoritative feature
   module PdnsAuthoritativeHelpers
     include Pdns::Helpers
-
-    def systemd_name(name = nil)
-      "pdns@#{name}"
-    end
-
-    def sysvinit_name(name = nil)
-      "pdns_authoritative-#{name}"
-    end
-
-    def default_authoritative_run_user
-      'pdns'
-    end
 
     def backend_package_per_platform(instance_name = 'postgresql')
       return 'pdns-backend-geo'        if node['platform_family'] == 'debian' && instance_name == 'geo'
@@ -101,46 +119,25 @@ module Pdns
       return 'pdns-backend-sqlite'     if node['platform_family'] == 'rhel'   && instance_name == 'sqlite'
     end
 
+    def systemd_name(name = nil)
+      "pdns@#{name}"
+    end
+
+    def sysvinit_name(name = nil)
+      "pdns_authoritative-#{name}"
+    end
+
     module_function
+    def default_authoritative_run_user
+      'pdns'
+    end
+
     def default_authoritative_config_directory(platform_family = 'rhel')
       case platform_family
       when 'debian'
         '/etc/powerdns'
       when 'rhel'
         '/etc/pdns'
-      end
-    end
-  end
-end
-
-module Pdns
-  # Common helper for PowerDNS cookbook
-  module Helpers
-    REDHAT_URL = Mash.new(
-      auth: {
-        baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40',
-        gpgkey: 'https://repo.powerdns.com/CBC8B383-pub.asc',
-        baseurl_debug: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40/debug',
-      },
-      rec: {
-        baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/rec-40',
-        gpgkey: 'https://repo.powerdns.com/FD380FBB-pub.asc',
-        baseurl_debug: 'http://repo.powerdns.com/centos/$basearch/$releasever/rec-40/debug',
-      },
-    ).freeze unless constants.include? :REDHAT_URL
-
-    def repository_name(url = REDHAT_URL['auth']['baseurl'], name = '')
-      "powerdns-#{url.split('/').last}-#{name}"
-    end
-
-    def copy_properties_to(to, *properties)
-      properties = self.class.properties.keys if properties.empty?
-      properties.each do |p|
-        # If the property is set on from, and exists on to, set the
-        # property on to
-        if to.class.properties.include?(p) && property_is_set?(p)
-          to.send(p, send(p))
-        end
       end
     end
   end

@@ -20,9 +20,7 @@ include ::Pdns::Helpers
 
 resource_name :pdns_recursor_repo_debian
 
-provides :pdns_recursor_repo, os: 'linux' do |_node|
-  Chef::Platform::ServiceHelpers.service_resource_providers.include?(:debian)
-end
+provides :pdns_recursor_repo, platform_family: 'debian'
 
 property :uri, String, default: lazy { "http://repo.powerdns.com/#{node['platform']}" }
 property :distribution, String, default: lazy { "#{node['lsb']['codename']}-rec-40" }

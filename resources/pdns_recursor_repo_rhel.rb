@@ -20,9 +20,7 @@ include ::Pdns::Helpers
 
 resource_name :pdns_recursor_repo_rhel
 
-provides :pdns_recursor_repo, os: 'linux' do |_node|
-  Chef::Platform::ServiceHelpers.service_resource_providers.include?(:redhat)
-end
+provides :pdns_recursor_repo, platform_family: 'rhel'
 
 property :instance_name, String, name_property: true
 property :baseurl, String, default: ::Pdns::Helpers::REDHAT_URL['rec']['baseurl']

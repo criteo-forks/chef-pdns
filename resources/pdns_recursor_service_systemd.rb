@@ -38,7 +38,7 @@ end
 # Chef::Platform::ServiceHelpers.service_resource_providers.include?(:systemd)
 
 property :instance_name, String, name_property: true
-property :config_dir, String, default: lazy { default_recursor_config_directory }
+property :config_dir, String, default: lazy { default_recursor_config_directory(node['platform_family']) }
 
 action :enable do
   # To make sure the default package doesn't start any "pdns_recursor" daemon

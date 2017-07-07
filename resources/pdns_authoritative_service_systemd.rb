@@ -38,7 +38,7 @@ end
 # Chef::Platform::ServiceHelpers.service_resource_providers.include?(:systemd)
 
 property :instance_name, String, name_property: true
-property :config_dir, String, default: lazy { default_authoritative_config_directory }
+property :config_dir, String, default: lazy { default_authoritative_config_directory(node['platform_family']) }
 
 action :enable do
   service 'pdns' do
