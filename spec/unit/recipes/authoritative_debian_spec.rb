@@ -11,7 +11,7 @@ describe 'pdns_test::authoritative_install_multi' do
     end
 
     let(:chef_run) { ubuntu_runner.converge(described_recipe) }
-    let(:version) { '4.0.4-1pdns.trusty' }
+    let(:version) { '4.0.5-1pdns.trusty' }
 
     let(:ubuntu_runner_1604) do
       ChefSpec::SoloRunner.new(

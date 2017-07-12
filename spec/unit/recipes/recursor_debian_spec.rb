@@ -11,7 +11,7 @@ describe 'pdns_test::recursor_install_multi' do
     end
 
     let(:chef_run) { ubuntu_runner.converge(described_recipe) }
-    let(:version) { '4.0.5-1pdns.trusty' }
+    let(:version) { '4.0.8-1pdns.trusty' }
 
     let(:ubuntu_runner_1604) do
       ChefSpec::SoloRunner.new(
@@ -28,8 +28,7 @@ describe 'pdns_test::recursor_install_multi' do
 
     # Chef gets node['lsb']['codename'] even if it is not set as an attribute
     it 'adds apt repository' do
-      expect(chef_run).to add_apt_repository('powerdns-rec-40-server_01')
-      .with(uri: 'http://repo.powerdns.com/ubuntu', distribution: 'trusty-rec-40')
+      expect(chef_run).to add_apt_repository('powerdns-trusty-rec-40-server_01')
     end
 
     it 'creates apt pin for pdns' do

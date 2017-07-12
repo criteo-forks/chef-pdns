@@ -13,13 +13,13 @@ describe 'pdns_test::recursor_install_multi' do
     end
 
     let(:chef_run) { rhel_runner.converge(described_recipe) }
-    let(:version) { '4.0.5-1pdns.el6' }
+    let(:version) { '4.0.8-1pdns.el6' }
 
     let(:rhel_runner_7) do
       ChefSpec::SoloRunner.new(
         os: 'linux',
         platform: 'centos',
-        version: '7.2.1511',
+        version: '7.5.1804',
         step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service', 'pdns_recursor_repo', 'pdns_recursor_repo_rhel']) do |node|
         node.automatic['packages']['centos-release']['version'] = '7'
       end
