@@ -20,7 +20,7 @@ describe 'pdns_test::recursor_install_multi' do
         os: 'linux',
         platform: 'centos',
         version: '7.2.1511',
-        step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service']) do |node|
+        step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service', 'pdns_recursor_repo', 'pdns_recursor_repo_rhel']) do |node|
         node.automatic['packages']['centos-release']['version'] = '7'
       end
     end
@@ -36,12 +36,10 @@ describe 'pdns_test::recursor_install_multi' do
     end
 
     it 'adds yum repository powerdns-rec-40-server_01' do
-      mock_service_resource_providers(%i{redhat upstart})
       expect(chef_run).to create_yum_repository('powerdns-rec-40-server_01')
     end
 
     it 'adds yum repository powerdns-rec-40-server_02-debuginfo' do
-      mock_service_resource_providers(%i{redhat upstart})
       expect(chef_run).to create_yum_repository('powerdns-rec-40-server_02-debuginfo')
     end
 

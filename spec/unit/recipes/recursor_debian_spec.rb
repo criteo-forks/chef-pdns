@@ -18,7 +18,7 @@ describe 'pdns_test::recursor_install_multi' do
         os: 'linux',
         platform: 'ubuntu',
         version: '16.04',
-        step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service'])
+        step_into: ['pdns_recursor_install', 'pdns_recursor_config', 'pdns_recursor_service', 'pdns_recursor_repo', 'pdns_recursor_repo_debian'])
     end
 
     let(:chef_run_1604) { ubuntu_runner_1604.converge(described_recipe) }
@@ -28,7 +28,6 @@ describe 'pdns_test::recursor_install_multi' do
 
     # Chef gets node['lsb']['codename'] even if it is not set as an attribute
     it 'adds apt repository' do
-      mock_service_resource_providers(%i{debian})
       expect(chef_run).to add_apt_repository('powerdns-rec-40-server_01')
       .with(uri: 'http://repo.powerdns.com/ubuntu', distribution: 'trusty-rec-40')
     end
@@ -39,7 +38,6 @@ describe 'pdns_test::recursor_install_multi' do
     end
 
     it 'installs pdns recursor package' do
-      mock_service_resource_providers(%i{debian})
       expect(chef_run).to install_package('pdns-recursor').with(version: version)
     end
 
