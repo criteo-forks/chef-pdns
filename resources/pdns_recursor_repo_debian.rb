@@ -27,7 +27,7 @@ property :distribution, String, default: lazy { "#{node['lsb']['codename']}-rec-
 property :key, String, default: 'https://repo.powerdns.com/FD380FBB-pub.asc'
 
 action :create do
-  apt_repository repository_name(new_resource.baseurl, new_resource.instance_name) do
+  apt_repository repository_name(new_resource.distribution, new_resource.instance_name) do
     uri new_resource.uri
     distribution new_resource.distribution
     arch node['kernel']['machine'] == 'x86_64' ? 'amd64': 'i386'
@@ -43,7 +43,7 @@ action :create do
 end
 
 action :delete do
-  apt_repository repository_name(new_resource.baseurl, new_resource.instance_name) do
+  apt_repository repository_name(new_resource.distribution, new_resource.instance_name) do
     uri new_resource.uri
     distribution new_resource.distribution
     arch node['kernel']['machine'] == 'x86_64' ? 'amd64': 'i386'
