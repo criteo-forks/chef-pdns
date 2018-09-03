@@ -7,7 +7,7 @@ describe 'pdns_test::authoritative_install_multi' do
         os: 'linux',
         platform: 'ubuntu',
         version: '14.04',
-        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service'])
+        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service', 'pdns_authoritative_repo', 'pdns_authoritative_repo_debian'])
     end
 
     let(:chef_run) { ubuntu_runner.converge(described_recipe) }
@@ -18,7 +18,7 @@ describe 'pdns_test::authoritative_install_multi' do
         os: 'linux',
         platform: 'ubuntu',
         version: '16.04',
-        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service'])
+        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service', 'pdns_authoritative_repo', 'pdns_authoritative_repo_debian'])
     end
 
     let(:chef_run_1604) { ubuntu_runner_1604.converge(described_recipe) }
@@ -38,7 +38,7 @@ describe 'pdns_test::authoritative_install_multi' do
     end
 
     it 'installs pdns authoritative package' do
-      expect(chef_run).to install_apt_package('pdns-server').with(version: version)
+      expect(chef_run).to install_package('pdns-server').with(version: version)
     end
 
     #
