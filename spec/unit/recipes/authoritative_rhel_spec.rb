@@ -7,20 +7,20 @@ describe 'pdns_test::authoritative_install_multi' do
         os: 'linux',
         platform: 'centos',
         version: '6.8',
-        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service']) do |node|
+        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service', 'pdns_authoritative_repo', 'pdns_authoritative_repo_rhel']) do |node|
         node.automatic['packages']['centos-release']['version'] = '6'
       end
     end
 
     let(:chef_run) { rhel_runner.converge(described_recipe) }
-    let(:version) { '4.0.4-1pdns.el6' }
+    let(:version) { '4.0.5-1pdns.el6' }
 
     let(:rhel_runner_7) do
       ChefSpec::SoloRunner.new(
         os: 'linux',
         platform: 'centos',
         version: '7.3.1611',
-        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service']) do |node|
+        step_into: ['pdns_authoritative_install', 'pdns_authoritative_config', 'pdns_authoritative_service', 'pdns_authoritative_repo', 'pdns_authoritative_repo_rhel']) do |node|
         node.automatic['packages']['centos-release']['version'] = '7'
       end
     end
@@ -34,16 +34,20 @@ describe 'pdns_test::authoritative_install_multi' do
       expect(chef_run).to install_yum_package('epel-release')
     end
 
-    it'adds yum repository powerdns-auth-40' do
-      expect(chef_run).to create_yum_repository('powerdns-auth-40')
+    it'adds yum repository powerdns-auth-40-server_01' do
+      expect(chef_run).to create_yum_repository('powerdns-auth-40-server_01')
+        .with(baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40',
+              gpgkey: 'https://repo.powerdns.com/FD380FBB-pub.asc',
+             )
     end
 
-    it'adds yum repository powerdns-auth-40-debuginfo' do
-      expect(chef_run).to create_yum_repository('powerdns-auth-40-debuginfo')
+    it'adds yum repository powerdns-auth-40-server_02-debuginfo' do
+      expect(chef_run).to create_yum_repository('powerdns-auth-40-server_02-debuginfo')
+        .with(baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40/debug')
     end
 
     it'installs pdns authoritative package' do
-      expect(chef_run).to install_yum_package('pdns').with(version: version)
+      expect(chef_run).to install_package('pdns').with(version: version)
     end
 
     #

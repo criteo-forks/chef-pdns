@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: pdns
-# Resources:: pdns_recursor_
+# Resources:: pdns_authoritative_install_debian
 #
-# Copyright 2017, Aetrion, LLC DBA DNSimple
+# Copyright 2014-2017 Aetrion LLC. dba DNSimple
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,35 +16,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include ::Pdns::Helpers
 
-resource_name :pdns_recursor_repo_debian
+resource_name :pdns_authoritative_repo_debian
 
-provides :pdns_recursor_repo, platform_family: 'debian'
+provides :pdns_authoritative_repo, platform: 'debian' do |node|
+  node['platform_version'].to_i >= 8
+end
+
+provides :pdns_authoritative_repo, platform: 'ubuntu' do |node|
+  node['platform_version'].to_i >= 14
+end
 
 property :instance_name, String, name_property: true
 property :uri, String, default: lazy { "http://repo.powerdns.com/#{node['platform']}" }
-property :distribution, String, default: lazy { "#{node['lsb']['codename']}-rec-40" }
+property :distribution, String, default: lazy { "#{node['lsb']['codename']}-auth-40" }
 property :key, String, default: 'https://repo.powerdns.com/FD380FBB-pub.asc'
+property :debug, [true, false], default: false
 
-action :create do
-  apt_repository repository_name(new_resource.distribution, new_resource.instance_name) do
+action :install do
+  apt_repository 'powerdns-authoritative' do
     uri new_resource.uri
     distribution new_resource.distribution
     arch node['kernel']['machine'] == 'x86_64' ? 'amd64': 'i386'
     components ['main']
     key new_resource.key
-    action :add
   end
 
   apt_preference 'pdns-*' do
-    pin "origin #{URI(new_resource.uri).host}"
+    pin          "origin #{URI(new_resource.uri).host}"
     pin_priority '600'
   end
 end
 
-action :delete do
-  apt_repository repository_name(new_resource.distribution, new_resource.instance_name) do
+action :uninstall do
+  apt_repository 'powerdns-authoritative' do
     uri new_resource.uri
     distribution new_resource.distribution
     arch node['kernel']['machine'] == 'x86_64' ? 'amd64': 'i386'

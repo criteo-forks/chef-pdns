@@ -1,21 +1,24 @@
+VERSION_REC = '4.0.8-1pdns'.freeze unless defined?(VERSION_REC)
+VERSION_AUTH = '4.0.5-1pdns'.freeze unless defined?(VERSION_AUTH)
+
 def recursor_version_per_platform
   case node['platform']
   when 'debian'
-    '4.0.5-1pdns.jessie'
+    "#{VERSION_REC}.jessie"
   when 'ubuntu'
-    "4.0.5-1pdns.#{node['lsb']['codename']}"
+    "#{VERSION_REC}.#{node['lsb']['codename']}"
   when 'centos'
-    "4.0.5-1pdns.el#{node['packages']['centos-release']['version']}"
+    "#{VERSION_REC}.el#{node['packages']['centos-release']['version']}"
   end
 end
 
 def authoritative_version_per_platform
   case node['platform']
   when 'debian'
-    '4.0.4-1pdns.jessie'
+    "#{VERSION_AUTH}.jessie"
   when 'ubuntu'
-    "4.0.4-1pdns.#{node['lsb']['codename']}"
+    "#{VERSION_AUTH}.#{node['lsb']['codename']}"
   when 'centos'
-    "4.0.4-1pdns.el#{node['packages']['centos-release']['version']}"
+    "#{VERSION_AUTH}.el#{node['packages']['centos-release']['version']}"
   end
 end

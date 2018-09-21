@@ -22,7 +22,7 @@ module Pdns
     REDHAT_URL = Mash.new(
       auth: {
         baseurl: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40',
-        gpgkey: 'https://repo.powerdns.com/CBC8B383-pub.asc',
+        gpgkey: 'https://repo.powerdns.com/FD380FBB-pub.asc',
         baseurl_debug: 'http://repo.powerdns.com/centos/$basearch/$releasever/auth-40/debug',
       },
       rec: {

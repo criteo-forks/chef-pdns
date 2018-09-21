@@ -26,10 +26,10 @@ check_process_name('server_01', default_authoritative_run_user)
 check_process_name('server_02', 'another-pdns')
 
 describe command('dig -p 53 chaos txt version.bind @127.0.0.1 +short') do
-  its('stdout.chomp') { should match(/"PowerDNS Authoritative Server 4.0.4/) }
+  its('stdout.chomp') { should match(/"PowerDNS Authoritative Server 4.0.5/) }
 end
 
 describe command('dig -p 54 chaos txt version.bind @127.0.0.1 +short') do
-  its('stdout.chomp') { should match(/"PowerDNS Authoritative Server 4.0.4/) }
+  its('stdout.chomp') { should match(/"PowerDNS Authoritative Server 4.0.5/) }
 end
 
