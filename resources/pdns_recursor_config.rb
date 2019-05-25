@@ -64,6 +64,7 @@ action :create do
 
   group new_resource.run_group do
     members [new_resource.run_user]
+    append true
     system true
     action :create
   end
