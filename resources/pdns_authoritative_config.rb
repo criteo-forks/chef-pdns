@@ -70,7 +70,7 @@ action :create do
   end
 
   directory new_resource.socket_dir do
-    owner new_resource.run_user
+    owner 'root'
     group new_resource.run_group
     # Because of the DynListener creation before dropping privileges, the
     # socket-directory has to be '0777' for now
@@ -84,7 +84,7 @@ action :create do
     source new_resource.source
     cookbook new_resource.cookbook
     owner 'root'
-    group 'root'
+    group new_resource.run_group
     mode '0640'
     variables(
       launch: new_resource.launch,
