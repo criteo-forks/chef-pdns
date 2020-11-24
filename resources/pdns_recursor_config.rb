@@ -70,7 +70,7 @@ action :create do
   end
 
   directory new_resource.socket_dir do
-    owner new_resource.run_user
+    owner 'root'
     group new_resource.run_group
     # When using service_manager the 'socket-dir' has to be writable for the 'set-gid'
     # in order to start the service:
@@ -84,7 +84,7 @@ action :create do
     source new_resource.source
     cookbook new_resource.cookbook
     owner 'root'
-    group 'root'
+    group new_resource.run_group
     mode '0640'
     variables(
       socket_dir: new_resource.socket_dir,
