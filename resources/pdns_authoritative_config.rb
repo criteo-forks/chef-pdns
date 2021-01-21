@@ -69,17 +69,6 @@ action :create do
     action :create
   end
 
-  directory new_resource.socket_dir do
-    owner 'root'
-    group new_resource.run_group
-    # Because of the DynListener creation before dropping privileges, the
-    # socket-directory has to be '0777' for now
-    # Issue: https://github.com/PowerDNS/pdns/issues/4826
-    mode Chef::Platform::ServiceHelpers.service_resource_providers.include?(:systemd) ? '0777' : '0755'
-    recursive true
-    action :create
-  end
-
   template "#{new_resource.config_dir}/pdns-#{new_resource.instance_name}.conf" do
     source new_resource.source
     cookbook new_resource.cookbook
